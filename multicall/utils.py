@@ -55,7 +55,7 @@ def get_async_w3(w3: Web3) -> Web3:
 
 def get_event_loop() -> asyncio.AbstractEventLoop:
     try:
-        return asyncio.get_event_loop()
+        return asyncio.get_running_loop()
     except RuntimeError as e: # Necessary for use with multi-threaded applications.
         if not str(e).startswith("There is no current event loop in thread"):
             raise e
@@ -67,7 +67,7 @@ def await_awaitable(awaitable: Awaitable) -> Any:
 async def run_in_subprocess(callable: Callable, *args: Any, **kwargs) -> Any:
     if NUM_PROCESSES == 1:
         return callable(*args, **kwargs)
-    return await asyncio.get_event_loop().run_in_executor(process_pool_executor, callable, *args, **kwargs)
+    return await asyncio.get_running_loop().run_in_executor(process_pool_executor, callable, *args, **kwargs)
 
 def raise_if_exception(obj: Any) -> None:
     if isinstance(obj, Exception):
